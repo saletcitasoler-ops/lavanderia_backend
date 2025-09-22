@@ -11,15 +11,22 @@ const app = express();
 const PORT = 5500;
 
 // --- CONEXIÓN A LA BASE DE DATOS EN LA NUBE (SUPABASE) ---
+// Modificado para forzar la conexión por IPv4 y solucionar el error ENETUNREACH
 const pool = new Pool({
-    connectionString: 'postgresql://postgres:telas2005@db.dfmpyiucosdnzciqnzjy.supabase.co:5432/postgres',
+    user: 'postgres',
+    host: 'db.dfmpyiucosdnzciqnzjy.supabase.co',
+    database: 'postgres',
+    password: 'telas2005', // ATENCIÓN: Mueve esto a variables de entorno en el futuro
+    port: 5432,
     ssl: {
         rejectUnauthorized: false
-    }
+    },
+    family: 4, // <-- Esta es la línea que soluciona el problema
 });
 
 app.use(express.json());
-app.use(express.static(path.join(__dirname, '..', 'frontend')));
+// Se comentan las líneas del frontend para que el backend funcione de forma independiente
+// app.use(express.static(path.join(__dirname, '..', 'frontend'))); 
 app.use(cors({
     origin: (origin, callback) => {
         callback(null, origin);
@@ -78,7 +85,8 @@ app.post('/api/auth/logout', (req, res) => {
 });
 */
 
-app.get('/', (req, res) => res.sendFile(path.join(__dirname, '..', 'frontend', 'index.html')));
+// Se comenta la ruta raíz para que no intente servir el index.html
+// app.get('/', (req, res) => res.sendFile(path.join(__dirname, '..', 'frontend', 'index.html')));
 //app.use(isAuthenticated); // La protección de rutas está desactivada
 
 // --- RUTAS API DE CAJA (ACTUALIZADAS) ---
@@ -351,7 +359,7 @@ app.get('/api/reporte/mensual', async (req, res) => {
         console.error('Error al generar reporte:', e);
         res.status(500).send('Error al generar el reporte.');
     }
-});
+}); // <-- ESTA LÍNEA SE CORRIGIÓ
 
 app.listen(PORT, () => {
     console.log(`Servidor escuchando en http://localhost:${PORT}`);
