@@ -1,4 +1,4 @@
-// server.js (Versión SIN LOGIN)
+// server.js (Versión SIN LOGIN y CON LOGS DE ERRORES)
 const express = require('express');
 const cors = require('cors');
 const { Pool } = require('pg');
@@ -87,7 +87,10 @@ app.get('/api/caja/estado', async (req, res) => {
         const query = "SELECT * FROM caja_sesiones WHERE fecha_sesion = CURRENT_DATE AND estado = 'Abierta'";
         const result = await pool.query(query);
         res.json({ abierta: result.rows.length > 0, datos: result.rows[0] });
-    } catch (e) { res.status(500).json({ error: e.message }); }
+    } catch (e) {
+        console.error("Error en GET /api/caja/estado:", e);
+        res.status(500).json({ error: e.message });
+    }
 });
 
 app.post('/api/caja/abrir', async (req, res) => {
@@ -112,6 +115,7 @@ app.post('/api/caja/cerrar', async (req, res) => {
         await pool.query(query, [ingresos_dia, gastos_dia, balance_final]);
         res.status(200).json({ message: 'Caja cerrada con éxito.' });
     } catch (e) {
+        console.error("Error en POST /api/caja/cerrar:", e);
         res.status(500).json({ error: e.message });
     }
 });
@@ -167,7 +171,10 @@ app.get('/api/trabajos', async (req, res) => {
         `;
         const result = await pool.query(query);
         res.json(result.rows);
-    } catch (e) { res.status(500).json({ error: e.message }); }
+    } catch (e) {
+        console.error("Error en GET /api/trabajos:", e);
+        res.status(500).json({ error: e.message });
+    }
 });
 
 app.get('/api/trabajos/buscar', async (req, res) => {
@@ -182,7 +189,10 @@ app.get('/api/trabajos/buscar', async (req, res) => {
         `;
         const result = await pool.query(query, [`%${termino}%`]);
         res.json(result.rows);
-    } catch (e) { res.status(500).json({ error: e.message }); }
+    } catch (e) {
+        console.error("Error en GET /api/trabajos/buscar:", e);
+        res.status(500).json({ error: e.message });
+    }
 });
 
 // --- OTRAS RUTAS ---
@@ -257,7 +267,10 @@ app.get('/api/trabajos/entregados-hoy', async (req, res) => {
         `;
         const result = await pool.query(query);
         res.json(result.rows);
-    } catch (e) { res.status(500).json({ error: e.message }); }
+    } catch (e) {
+        console.error("Error en GET /api/trabajos/entregados-hoy:", e);
+        res.status(500).json({ error: e.message });
+    }
 });
 
 app.get('/api/proveedores', async (req, res) => {
@@ -265,7 +278,10 @@ app.get('/api/proveedores', async (req, res) => {
         const query = 'SELECT * FROM proveedores ORDER BY nombre ASC';
         const result = await pool.query(query);
         res.json(result.rows);
-    } catch (e) { res.status(500).json({ error: e.message }); }
+    } catch (e) {
+        console.error("Error en GET /api/proveedores:", e);
+        res.status(500).json({ error: e.message });
+    }
 });
 
 app.post('/api/gastos', async (req, res) => {
@@ -274,7 +290,10 @@ app.post('/api/gastos', async (req, res) => {
         const query = 'INSERT INTO gastos (descripcion, proveedor_id, costo) VALUES ($1, $2, $3) RETURNING *';
         const result = await pool.query(query, [descripcion, proveedor_id || null, costo]);
         res.status(201).json(result.rows[0]);
-    } catch (e) { res.status(500).json({ error: e.message }); }
+    } catch (e) {
+        console.error("Error en POST /api/gastos:", e);
+        res.status(500).json({ error: e.message });
+    }
 });
 
 app.get('/api/gastos', async (req, res) => {
@@ -292,7 +311,10 @@ app.get('/api/gastos', async (req, res) => {
         `;
         const result = await pool.query(query);
         res.json(result.rows);
-    } catch (e) { res.status(500).json({ error: e.message }); }
+    } catch (e) {
+        console.error("Error en GET /api/gastos:", e);
+        res.status(500).json({ error: e.message });
+    }
 });
 
 app.get('/api/reporte/mensual', async (req, res) => {
