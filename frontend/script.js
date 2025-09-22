@@ -1,5 +1,7 @@
 // public/script.js (Versión SIN LOGIN)
 document.addEventListener('DOMContentLoaded', () => {
+    // URL del backend en Render
+    const apiUrl = 'https://lavanderia-backend-wjc3.onrender.com';
     let cajaAbierta = false;
 
     // --- Selectores de elementos ---
@@ -78,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // =================================================================================
     async function initCaja() {
         try {
-            const response = await fetch('/api/caja/estado', { credentials: 'include' });
+            const response = await fetch(`${apiUrl}/api/caja/estado`, { credentials: 'include' });
             if (!response.ok) throw new Error('Error de red al verificar la caja');
             const estado = await response.json();
             
@@ -92,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (!confirmacion) return;
                     
                     try {
-                        const res = await fetch('/api/caja/resumen-dia', { credentials: 'include' });
+                        const res = await fetch(`${apiUrl}/api/caja/resumen-dia`, { credentials: 'include' });
                         const data = await res.json();
                         
                         const tablaIngresos = document.getElementById('tabla-resumen-ingresos');
@@ -123,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             const confirmacionFinal = await showCustomModal('Confirmar Cierre', 'Una vez cerrada la caja, no podrás realizar más operaciones hoy. ¿Estás seguro?', 'confirm');
                             if (!confirmacionFinal) return;
                             
-                            await fetch('/api/caja/cerrar', {
+                            await fetch(`${apiUrl}/api/caja/cerrar`, {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({ 
@@ -151,7 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
     abrirCajaForm.addEventListener('submit', async e => {
         e.preventDefault();
         const monto = parseInt(document.getElementById('monto_inicial').value.replace(/\D/g, '')) || 0;
-        const res = await fetch('/api/caja/abrir', {
+        const res = await fetch(`${apiUrl}/api/caja/abrir`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ monto_inicial: monto }),
@@ -182,7 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         const fetchTrabajos = async () => {
             if (!cajaAbierta) return;
-            const response = await fetch('/api/trabajos', { credentials: 'include' });
+            const response = await fetch(`${apiUrl}/api/trabajos`, { credentials: 'include' });
             const trabajos = await response.json();
             tableBody.innerHTML = `<thead><tr><th>Boleta</th><th>Cliente</th><th>Monto</th></tr></thead><tbody>${trabajos.map(t => `<tr><td>${t.boleta_id}</td><td>${t.nombre_completo}</td><td>Gs. ${Number(t.monto_total).toLocaleString('es-PY')}</td></tr>`).join('')}</tbody>`;
             if (trabajos.length === 0) tableBody.querySelector('tbody').innerHTML = '<tr><td colspan="3">No hay trabajos pendientes.</td></tr>';
@@ -202,7 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 forma_pago: document.getElementById('forma_pago').value,
                 estado_pago: document.getElementById('estado_pago').value,
             };
-            const response = await fetch('/api/trabajos', {
+            const response = await fetch(`${apiUrl}/api/trabajos`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData),
@@ -229,7 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const fetchEntregadosHoy = async () => {
             if (!cajaAbierta) return;
-            const response = await fetch('/api/trabajos/entregados-hoy', { credentials: 'include' });
+            const response = await fetch(`${apiUrl}/api/trabajos/entregados-hoy`, { credentials: 'include' });
             const trabajos = await response.json();
             fechaHoySpan.textContent = new Date().toLocaleDateString('es-PY');
             tablaEntregadosHoy.innerHTML = `<thead><tr><th>Hora</th><th>Boleta</th><th>Cliente</th><th>Monto</th></tr></thead><tbody>${trabajos.map(t => `<tr><td>${t.hora_salida}</td><td>#${t.boleta_id}</td><td>${t.nombre_completo}</td><td>Gs. ${Number(t.monto_total).toLocaleString('es-PY')}</td></tr>`).join('') || '<tr><td colspan="4">Aún no se entregaron trabajos hoy.</td></tr>'}</tbody>`;
@@ -242,7 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
             resultadoDiv.innerHTML = '';
             if (!termino) return;
             try {
-                const response = await fetch(`/api/trabajos/buscar?termino=${encodeURIComponent(termino)}`, { credentials: 'include' });
+                const response = await fetch(`${apiUrl}/api/trabajos/buscar?termino=${encodeURIComponent(termino)}`, { credentials: 'include' });
                 const resultados = await response.json();
                 const enStock = resultados.filter(t => t.estado_stock === 'En Stock');
                 const entregados = resultados.filter(t => t.estado_stock === 'Entregado');
