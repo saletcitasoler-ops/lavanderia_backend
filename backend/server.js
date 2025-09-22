@@ -1,4 +1,4 @@
-// server.js (Versión FINAL con corrección IPv4)
+// server.js (Versión FINAL con corrección de IP directa)
 const express = require('express');
 const cors = require('cors');
 const { Pool } = require('pg');
@@ -11,22 +11,19 @@ const app = express();
 const PORT = 5500;
 
 // --- CONEXIÓN A LA BASE DE DATOS EN LA NUBE (SUPABASE) ---
-// Modificado para forzar la conexión por IPv4 y solucionar el error ENETUNREACH
+// Modificado para usar la IP directa (IPv4) y evitar el error ENETUNREACH
 const pool = new Pool({
     user: 'postgres',
-    host: 'db.dfmpyiucosdnzciqnzjy.supabase.co',
+    host: '65.8.151.109', // <-- ESTE ES EL CAMBIO CLAVE
     database: 'postgres',
     password: 'telas2005', // ATENCIÓN: Mueve esto a variables de entorno en el futuro
     port: 5432,
     ssl: {
         rejectUnauthorized: false
-    },
-    family: 4, // <-- Esta es la línea que soluciona el problema
+    }
 });
 
 app.use(express.json());
-// Se comentan las líneas del frontend para que el backend funcione de forma independiente
-// app.use(express.static(path.join(__dirname, '..', 'frontend'))); 
 app.use(cors({
     origin: (origin, callback) => {
         callback(null, origin);
@@ -40,10 +37,7 @@ app.use(session({
     cookie: { secure: 'auto' }
 }));
 
-// Se comenta la ruta raíz para que no intente servir el index.html
-// app.get('/', (req, res) => res.sendFile(path.join(__dirname, '..', 'frontend', 'index.html')));
-
-// --- RUTAS API DE CAJA (ACTUALIZADAS) ---
+// --- RUTAS API DE CAJA ---
 app.get('/api/caja/estado', async (req, res) => {
     try {
         const query = "SELECT * FROM caja_sesiones WHERE fecha_sesion = CURRENT_DATE AND estado = 'Abierta'";
@@ -82,7 +76,7 @@ app.post('/api/caja/cerrar', async (req, res) => {
     }
 });
 
-// --- RUTAS API DE TRABAJOS (ACTUALIZADAS) ---
+// --- RUTAS API DE TRABAJOS ---
 app.post('/api/trabajos', async (req, res) => {
     const {
         nombre_cliente, contacto_celular, email_cliente, tipo_prenda, servicio, descripcion,
