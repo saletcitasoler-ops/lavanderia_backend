@@ -1,4 +1,4 @@
-// server.js (Versión FINAL con corrección de IP directa)
+// server.js (Versión FINAL con Supabase Transaction Pooler)
 const express = require('express');
 const cors = require('cors');
 const { Pool } = require('pg');
@@ -10,14 +10,11 @@ const excel = require('exceljs');
 const app = express();
 const PORT = 5500;
 
-// --- CONEXIÓN A LA BASE DE DATOS EN LA NUBE (SUPABASE) ---
-// Modificado para usar la IP directa (IPv4) y evitar el error ENETUNREACH
+// --- CONEXIÓN A LA BASE DE DATOS (SUPABASE) ---
+// Modificado para usar el Transaction Pooler de Supabase
 const pool = new Pool({
-    user: 'postgres',
-    host: '65.8.151.109', // <-- ESTE ES EL CAMBIO CLAVE
-    database: 'postgres',
-    password: 'telas2005', // ATENCIÓN: Mueve esto a variables de entorno en el futuro
-    port: 5432,
+    // ▼▼▼ REEMPLAZA ESTE TEXTO CON TU NUEVA CONTRASEÑA ▼▼▼
+    connectionString: 'postgresql://postgres.dfmpyiucosdnzciqnzjy:[telas2005]@aws-1-us-east-2.pooler.supabase.com:6543/postgres',
     ssl: {
         rejectUnauthorized: false
     }
