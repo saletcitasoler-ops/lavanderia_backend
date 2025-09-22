@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acqua e Jabone - Panel de Control</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    
+    <div id="app-container" class="app-layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1>Acqua e Jabone</h1>
+                <p>Panel de Control</p>
+            </div>
+            <ul class="sidebar-nav">
+                <li><a href="#" class="nav-link active" data-vista="caja">Cierre de Caja</a></li>
+                <li><a href="#" class="nav-link disabled" data-vista="entrada">Registrar Entrada</a></li>
+                <li><a href="#" class="nav-link disabled" data-vista="salida">Registrar Salida</a></li>
+                <li><a href="#" class="nav-link disabled" data-vista="gastos">Proveedores y Gastos</a></li>
+                <li><a href="#" class="nav-link disabled" data-vista="reportes">Reportes</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div id="vista-entrada" class="vista">
+                <section class="panel form-panel">
+                    <div class="panel-header"><h2>Registrar Nuevo Pedido</h2></div>
+                    <div class="panel-body">
+                        <form id="trabajo-form">
+                            <div class="form-row"><div class="form-group" style="flex: 2;"><label for="nombre_cliente">Nombre y Apellido:</label><input type="text" id="nombre_cliente" required></div><div class="form-group" style="flex: 1;"><label for="contacto_celular">N° de Celular:</label><input type="text" id="contacto_celular"></div></div>
+                            <div class="form-group"><label for="email_cliente">Email (Opcional):</label><input type="email" id="email_cliente"></div>
+                            <div class="form-row"><div class="form-group"><label for="tipo_prenda">Tipo de Prenda:</label><select id="tipo_prenda" required></select></div><div class="form-group"><label for="servicio">Servicio:</label><select id="servicio" required></select></div></div>
+                            <div class="form-group"><label for="descripcion">Notas / Descripción:</label><textarea id="descripcion" placeholder="Ej: Mancha en cuello..."></textarea></div>
+                            <div class="form-row"><div class="form-group"><label for="monto_total">Monto Total (Gs.):</label><input type="text" id="monto_total" required></div><div class="form-group"><label for="monto_recibido">Monto Recibido (Gs.):</label><input type="text" id="monto_recibido" value="0" required></div></div>
+                            <div class="form-row"><div class="form-group"><label for="forma_pago">Forma de Pago:</label><select id="forma_pago" required></select></div><div class="form-group"><label for="estado_pago">Estado del Pago:</label><select id="estado_pago" required></select></div></div>
+                            <button type="submit" class="submit-button">REGISTRAR NUEVO PEDIDO</button>
+                        </form>
+                    </div>
+                </section>
+                <section class="panel list-panel"><div class="panel-header"><h2>Trabajos Pendientes</h2></div><div class="panel-body"><table id="trabajos-table"></table></div></section>
+            </div>
+
+            <div id="vista-salida" class="vista">
+                <section class="panel">
+                    <div class="panel-header"><h2>Buscar y Entregar Pedido</h2></div>
+                    <div class="panel-body">
+                        <form id="salida-form" class="form-row" style="margin-bottom: 20px;"><div class="form-group" style="flex:2;"><label for="termino-busqueda">Buscar por N° de Boleta o Nombre:</label><input type="text" id="termino-busqueda" placeholder="Ingrese aquí..."></div><button type="submit" class="submit-button" style="flex:1; margin-top: auto;">Buscar</button></form>
+                        <div id="salida-resultado"></div>
+                        <hr style="margin: 20px 0;">
+                        <h3>Entregado Hoy (<span id="fecha-hoy"></span>)</h3>
+                        <div class="panel-body" style="padding:0; max-height: 300px;">
+                            <table id="tabla-entregados-hoy"></table>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <div id="vista-gastos" class="vista">
+                <section class="panel form-panel">
+                    <div class="panel-header"><h2>Registrar Nuevo Gasto</h2></div>
+                    <div class="panel-body">
+                        <form id="gasto-form">
+                            <div class="form-group">
+                                <label for="gasto_descripcion">Descripción:</label>
+                                <input type="text" id="gasto_descripcion" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="gasto_proveedor">Proveedor (Opcional):</label>
+                                <select id="gasto_proveedor"></select>
+                            </div>
+                            <div class="form-group">
+                                <label for="gasto_costo">Costo (Gs.):</label>
+                                <input type="text" id="gasto_costo" required>
+                            </div>
+                            <button type="submit" class="submit-button">Registrar Gasto</button>
+                        </form>
+                    </div>
+                </section>
+                <section class="panel list-panel">
+                    <div class="panel-header"><h2>Últimos Gastos</h2></div>
+                    <div class="panel-body">
+                        <table id="gastos-table"></table>
+                    </div>
+                </section>
+            </div>
+
+            <div id="vista-caja" class="vista active">
+                <section class="panel">
+                    <div class="panel-header"><h2>Gestión de Caja</h2></div>
+                    <div class="panel-body" id="caja-panel-body">
+                        <div id="caja-abierta-info" style="display: none;">
+                            <h3>Caja Abierta</h3>
+                            <p>Monto inicial: <strong id="monto-inicial-info"></strong>.</p>
+                            <button id="cerrar-caja-btn" class="submit-button" style="background-color: #f0ad4e; max-width: 300px;">Calcular Resumen del Día</button>
+                            <div id="resumen-caja" class="resumen-grid" style="display: none; margin-top: 20px;">
+                                <div class="resumen-columna">
+                                    <h4>INGRESOS DEL DÍA</h4>
+                                    <table id="tabla-resumen-ingresos"></table>
+                                </div>
+                                <div class="resumen-columna">
+                                    <h4>GASTOS DEL DÍA</h4>
+                                    <table id="tabla-resumen-gastos"></table>
+                                </div>
+                                <div class="resumen-final"></div>
+                            </div>
+                        </div>
+                        <div id="caja-cerrada-form">
+                            <h3>Abrir Caja</h3><p>Debes ingresar el monto inicial en caja para empezar a operar.</p>
+                            <form id="abrir-caja-form" class="form-row"><div class="form-group" style="flex:2;"><label for="monto_inicial">Monto Inicial (Gs.):</label><input type="text" id="monto_inicial" required></div><button type="submit" class="submit-button" style="flex:1; margin-top: auto;">Abrir Caja</button></form>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            
+            <div id="vista-reportes" class="vista">
+                <section class="panel">
+                    <div class="panel-header"><h2>Generar Reporte Mensual</h2></div>
+                    <div class="panel-body">
+                        <p>Selecciona el mes y el año para generar un reporte en formato Excel con el resumen de ingresos y gastos.</p>
+                        <form id="reporte-form" class="form-row">
+                            <div class="form-group">
+                                <label for="reporte-mes">Mes:</label>
+                                <select id="reporte-mes"></select>
+                            </div>
+                            <div class="form-group">
+                                <label for="reporte-ano">Año:</label>
+                                <input type="number" id="reporte-ano" min="2020" max="2099">
+                            </div>
+                            <button type="submit" class="submit-button" style="flex:1; margin-top: auto;">Generar y Descargar Excel</button>
+                        </form>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+    <div id="custom-modal-backdrop" class="modal-backdrop" style="display: none;">
+        <div id="custom-modal" class="modal">
+            <h2 id="modal-title">Título del Aviso</h2>
+            <div id="modal-body"></div>
+            <div class="modal-buttons">
+                <button id="modal-cancel-btn" class="modal-button cancel">Cancelar</button>
+                <button id="modal-ok-btn" class="modal-button ok">Aceptar</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,599 @@
+/* style.css (Versión Final y Completa) */
+
+:root {
+    /* Colores */
+    --primary-color: #4CAF50; /* Verde para acciones principales */
+    --secondary-color: #2196F3; /* Azul para información secundaria */
+    --accent-color: #FFC107; /* Amarillo para advertencias o énfasis */
+    --danger-color: #F44336; /* Rojo para errores o acciones peligrosas */
+    --text-color: #333;
+    --background-color: #f4f7f6;
+    --surface-color: #ffffff;
+    --border-color: #e0e0e0;
+
+    /* Espaciado */
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
+
+    /* Tipografía */
+    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --font-size-base: 16px;
+    --font-size-sm: 14px;
+    --font-size-lg: 20px;
+    --font-size-xl: 28px; /* Aumentado para títulos principales */
+
+    /* Sombras */
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+    --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+}
+
+/* Reset básico y estilos generales */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-family);
+    font-size: var(--font-size-base);
+    color: var(--text-color);
+    background-color: var(--background-color);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* --- Login Page --- */
+.login-container {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: var(--background-color);
+}
+
+.login-container.active {
+    display: flex;
+}
+
+.login-panel {
+    background-color: var(--surface-color);
+    padding: var(--spacing-xl);
+    border-radius: var(--spacing-sm);
+    box-shadow: var(--shadow-md);
+    width: 90%;
+    max-width: 400px;
+}
+
+.login-panel h2 {
+    text-align: center;
+    color: var(--primary-color);
+    margin-bottom: var(--spacing-lg);
+}
+
+.error-message {
+    color: var(--danger-color);
+    text-align: center;
+    margin-top: var(--spacing-md);
+}
+
+/* --- Layout de la Aplicación --- */
+.app-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* --- Barra Lateral (Sidebar) --- */
+.sidebar {
+    width: 250px; /* Ancho fijo */
+    background-color: var(--surface-color);
+    box-shadow: var(--shadow-md);
+    padding: var(--spacing-lg);
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--border-color);
+}
+
+.sidebar-header {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.sidebar-header h1 {
+    color: var(--primary-color);
+    font-size: var(--font-size-xl); /* Título de la app más grande */
+    margin-bottom: var(--spacing-xs);
+}
+
+.sidebar-header p {
+    font-size: var(--font-size-sm);
+    color: #777;
+}
+
+.logout-button {
+    background-color: var(--danger-color);
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: var(--font-size-sm);
+    margin-top: var(--spacing-md);
+}
+
+.sidebar-nav {
+    list-style: none;
+    flex-grow: 1;
+}
+
+.sidebar-nav li {
+    margin-bottom: var(--spacing-sm);
+}
+
+.sidebar-nav a {
+    display: block;
+    padding: var(--spacing-md);
+    color: var(--text-color);
+    text-decoration: none;
+    border-radius: var(--spacing-sm);
+    transition: background-color 0.2s ease, color 0.2s ease;
+    font-size: var(--font-size-base); /* Tamaño de fuente estándar */
+}
+
+.sidebar-nav a:hover:not(.disabled) {
+    background-color: #eef;
+    color: var(--secondary-color);
+}
+
+.sidebar-nav a.active {
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: bold;
+}
+
+.sidebar-nav a.disabled {
+    color: #ccc;
+    cursor: not-allowed;
+}
+
+/* --- Contenido Principal (Main Content) --- */
+.main-content {
+    flex-grow: 1;
+    padding: var(--spacing-lg);
+    overflow-y: auto; /* Para desplazar el contenido si es necesario */
+}
+
+/* --- Vistas (Sections) --- */
+.vista {
+    display: none;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.vista.active {
+    display: grid; /* Usar grid para las vistas con dos columnas principales */
+    grid-template-columns: 1fr; /* Por defecto una columna en pantallas pequeñas */
+    gap: var(--spacing-lg); /* Espacio entre paneles */
+}
+
+/* Ajuste para vistas con dos paneles para pantallas más grandes */
+@media (min-width: 992px) {
+    #vista-entrada.active,
+    #vista-gastos.active {
+        grid-template-columns: 2fr 1fr; /* Formulario más grande, lista más pequeña */
+    }
+    #vista-salida.active {
+        grid-template-columns: 1fr; /* La vista de salida puede ser una columna principal */
+    }
+}
+
+
+/* --- Paneles Generales --- */
+.panel {
+    background-color: var(--surface-color);
+    border-radius: var(--spacing-sm);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden; /* Para que los bordes redondeados se apliquen al contenido */
+}
+
+.panel-header {
+    background-color: var(--secondary-color);
+    color: white;
+    padding: var(--spacing-md) var(--spacing-lg);
+    font-size: var(--font-size-lg); /* Títulos de paneles más grandes */
+    font-weight: bold;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.panel-body {
+    padding: var(--spacing-lg);
+}
+
+/* --- Formularios --- */
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group {
+    margin-bottom: var(--spacing-md);
+}
+
+.form-row {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+}
+
+.form-row .form-group {
+    flex: 1; /* Distribuye el espacio equitativamente */
+    margin-bottom: 0; /* Ya manejado por el form-row */
+}
+
+label {
+    display: block;
+    margin-bottom: var(--spacing-xs);
+    font-weight: bold;
+    color: #555;
+    font-size: var(--font-size-sm); /* Etiquetas ligeramente más pequeñas */
+}
+
+input[type="text"],
+input[type="password"], /* Nuevo para el login */
+input[type="number"],
+input[type="email"],
+select,
+textarea {
+    width: 100%;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 1px solid var(--border-color);
+    border-radius: var(--spacing-xs);
+    font-size: var(--font-size-base); /* Campo de entrada legible */
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+    outline: none;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.submit-button {
+    background-color: var(--primary-color);
+    color: white;
+    padding: var(--spacing-md) var(--spacing-lg);
+    border: none;
+    border-radius: var(--spacing-xs);
+    cursor: pointer;
+    font-size: var(--font-size-base);
+    font-weight: bold;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    margin-top: var(--spacing-md);
+}
+
+.submit-button:hover {
+    background-color: #43a047;
+    transform: translateY(-1px);
+}
+
+.submit-button:active {
+    transform: translateY(0);
+}
+
+/* --- Tablas --- */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: var(--spacing-md);
+    font-size: var(--font-size-sm); /* Texto de tabla más conciso */
+}
+
+th, td {
+    border: 1px solid var(--border-color);
+    padding: var(--spacing-sm) var(--spacing-md);
+    text-align: left;
+}
+
+th {
+    background-color: #f0f0f0;
+    font-weight: bold;
+    color: #666;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* --- Mensajes de Resultado / Alertas --- */
+.resultado-item {
+    background-color: #e3f2fd; /* Azul claro para resultados */
+    border: 1px solid #90caf9;
+    border-radius: var(--spacing-xs);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap; /* Permite que los elementos se envuelvan */
+    gap: var(--spacing-sm); /* Espacio entre los elementos internos */
+}
+
+.resultado-item p {
+    margin: 0;
+    font-size: var(--font-size-base); /* Texto de resultado legible */
+    flex-basis: calc(50% - var(--spacing-sm)); /* Ocupa casi la mitad del ancho */
+}
+
+.resultado-item button {
+    flex-basis: auto; /* El botón ajusta su tamaño */
+    margin-top: 0;
+    padding: var(--spacing-xs) var(--spacing-md); /* Botón más pequeño */
+    font-size: var(--font-size-sm);
+}
+
+/* --- Estilos específicos de la Vista de Caja --- */
+#caja-abierta-info h3,
+#caja-cerrada-form h3 {
+    color: var(--primary-color);
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--spacing-md);
+}
+
+#caja-abierta-info p,
+#caja-cerrada-form p {
+    font-size: var(--font-size-base);
+    margin-bottom: var(--spacing-md);
+}
+
+.resumen-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* Una columna por defecto */
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-xl);
+    padding-top: var(--spacing-xl);
+    border-top: 2px dashed var(--border-color);
+}
+
+@media (min-width: 768px) {
+    .resumen-grid {
+        grid-template-columns: 1fr 1fr; /* Dos columnas para pantallas medianas */
+    }
+    .resumen-final {
+        grid-column: 1 / -1; /* Ocupa todo el ancho en dos columnas */
+    }
+}
+
+.resumen-columna h4 {
+    color: var(--secondary-color);
+    margin-bottom: var(--spacing-md);
+    font-size: var(--font-size-base);
+    text-transform: uppercase;
+}
+
+.resumen-final {
+    background-color: #e8f5e9; /* Verde claro */
+    border: 1px solid var(--primary-color);
+    border-radius: var(--spacing-sm);
+    padding: var(--spacing-lg);
+    margin-top: var(--spacing-lg); /* Espacio superior */
+    grid-column: 1 / -1; /* Ocupa todo el ancho si la grid tiene más de una columna */
+    text-align: center;
+}
+
+.resumen-final p {
+    margin-bottom: var(--spacing-sm);
+    font-size: var(--font-size-base);
+}
+
+.resumen-final p strong {
+    font-size: var(--font-size-lg);
+    color: var(--primary-color);
+}
+
+.resumen-final hr {
+    border: none;
+    border-top: 1px dashed var(--border-color);
+    margin: var(--spacing-md) 0;
+}
+
+/* --- Animaciones --- */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Estilos para móviles --- */
+@media (max-width: 768px) {
+    .app-layout {
+        flex-direction: column;
+    }
+    .sidebar {
+        width: 100%;
+        padding: var(--spacing-md);
+        box-shadow: var(--shadow-sm);
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+    }
+    .sidebar-header {
+        margin-bottom: var(--spacing-md);
+        padding-bottom: var(--spacing-sm);
+    }
+    .sidebar-nav {
+        flex-direction: row;
+        overflow-x: auto; /* Permite desplazamiento horizontal en nav */
+        white-space: nowrap;
+        padding-bottom: var(--spacing-sm);
+        -webkit-overflow-scrolling: touch;
+    }
+    .sidebar-nav li {
+        display: inline-block;
+        margin-right: var(--spacing-sm);
+    }
+    .sidebar-nav a {
+        padding: var(--spacing-sm) var(--spacing-md);
+        font-size: var(--font-size-sm);
+    }
+    .main-content {
+        padding: var(--spacing-md);
+    }
+    .vista.active {
+        grid-template-columns: 1fr; /* Siempre una columna en móviles */
+    }
+    .form-row {
+        flex-direction: column;
+        gap: 0; /* Eliminar el gap en columnas para móvil */
+    }
+    .form-row .form-group {
+        margin-bottom: var(--spacing-md); /* Restaurar margen para grupos */
+    }
+    .form-row .form-group:last-child {
+        margin-bottom: 0;
+    }
+    .resultado-item p {
+        flex-basis: 100%;
+    }
+    .resultado-item button {
+        width: 100%;
+    }
+    .resumen-grid {
+        grid-template-columns: 1fr;
+    }
+}
+/* Estilos para la nueva ventana modal grande */
+
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.2);
+    width: 90%;
+    max-width: 500px; /* Ancho máximo de la ventana */
+    text-align: left;
+}
+
+.modal h2 {
+    font-size: 2em; /* Título bien grande */
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: var(--text-color); /* Usar el color de texto por defecto */
+}
+
+.modal p {
+    font-size: 1.2em; /* Texto del párrafo más grande */
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+.modal .form-group {
+    margin-bottom: 20px;
+}
+
+.modal label {
+    font-size: 1em;
+}
+
+.modal input, .modal select {
+    font-size: 1.5em; /* Input de texto grande para ver bien los números */
+    padding: 15px;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.modal-button {
+    padding: 12px 25px;
+    font-size: 1.1em; /* Botones más grandes */
+    font-weight: bold;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.modal-button.ok {
+    background-color: var(--primary-color); /* Usar el color primario del tema */
+    color: white;
+}
+
+.modal-button.cancel {
+    background-color: #f0f0f0;
+    color: #777; /* Un gris más oscuro para mejor contraste */
+}
+/* Estilos para el nuevo botón de detalles */
+.details-button {
+    background-color: var(--secondary-color); /* Color azul */
+    color: white;
+    padding: var(--spacing-xs) var(--spacing-md);
+    border: none;
+    border-radius: var(--spacing-xs);
+    cursor: pointer;
+    font-size: var(--font-size-sm);
+    transition: background-color 0.2s ease;
+}
+
+.details-button:hover {
+    background-color: #1e88e5; /* Azul más oscuro */
+}
+
+/* Ajustes para el contenedor de resultados de búsqueda */
+.resultado-item {
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.resultado-info {
+    flex-grow: 1;
+}
+
+.resultado-acciones {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-left: var(--spacing-lg);
+}
+
+/* Estilos para la ventana de detalles */
+.detalle-pedido p {
+    margin-bottom: var(--spacing-sm);
+}
+.detalle-pedido hr {
+    margin: var(--spacing-md) 0;
+    border: none;
+    border-top: 1px solid var(--border-color);
+}
+.descripcion-nota {
+    background-color: #f7f7f7;
+    border-left: 3px solid var(--accent-color);
+    padding: var(--spacing-sm);
+    border-radius: var(--spacing-xs);
+    font-style: italic;
+}
