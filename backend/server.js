@@ -1,4 +1,4 @@
-// server.js (Versión SIN LOGIN y CON LOGS DE ERRORES)
+// server.js (Versión FINAL con corrección IPv4)
 const express = require('express');
 const cors = require('cors');
 const { Pool } = require('pg');
@@ -40,54 +40,8 @@ app.use(session({
     cookie: { secure: 'auto' }
 }));
 
-/*
-const isAuthenticated = (req, res, next) => {
-    if (req.session.user) {
-        next();
-    } else {
-        res.status(401).json({ error: 'No autorizado. Por favor, inicie sesión.' });
-    }
-};
-*/
-
-// --- RUTAS DE AUTENTICACIÓN (DESACTIVADAS) ---
-/*
-app.post('/api/auth/login', async (req, res) => {
-    const { username, password } = req.body;
-    try {
-        const userResult = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
-        if (userResult.rows.length === 0) {
-            return res.status(401).json({ error: 'Usuario no encontrado.' });
-        }
-        const user = userResult.rows[0];
-        const passwordMatch = await bcrypt.compare(password, user.password);
-        if (passwordMatch) {
-            req.session.user = { username: user.username };
-            res.status(200).json({ message: 'Inicio de sesión exitoso.' });
-        } else {
-            res.status(401).json({ error: 'Contraseña incorrecta.' });
-        }
-    } catch (error) {
-        console.error("Error en la autenticación:", error);
-        res.status(500).json({ error: 'Error del servidor.' });
-    }
-});
-
-app.get('/api/auth/status', (req, res) => {
-    res.json({ authenticated: !!req.session.user });
-});
-
-app.post('/api/auth/logout', (req, res) => {
-    req.session.destroy(err => {
-        if (err) { return res.status(500).json({ error: 'No se pudo cerrar la sesión.' }); }
-        res.status(200).json({ message: 'Sesión cerrada.' });
-    });
-});
-*/
-
 // Se comenta la ruta raíz para que no intente servir el index.html
 // app.get('/', (req, res) => res.sendFile(path.join(__dirname, '..', 'frontend', 'index.html')));
-//app.use(isAuthenticated); // La protección de rutas está desactivada
 
 // --- RUTAS API DE CAJA (ACTUALIZADAS) ---
 app.get('/api/caja/estado', async (req, res) => {
@@ -359,7 +313,7 @@ app.get('/api/reporte/mensual', async (req, res) => {
         console.error('Error al generar reporte:', e);
         res.status(500).send('Error al generar el reporte.');
     }
-}); // <-- ESTA LÍNEA SE CORRIGIÓ
+});
 
 app.listen(PORT, () => {
     console.log(`Servidor escuchando en http://localhost:${PORT}`);
